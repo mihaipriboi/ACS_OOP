@@ -1,0 +1,3 @@
+1. Pornind de la exemplul din slide 17, realizați o clasă Student cu următoarele atribute: nume, prenume, grupă, ce mi-a plăcut la laboratorul de SDA și vreau să fie păstrat, ce nu mi-a plăcut la laboratorul de SDA sau ce poate fi îmbunătățit, ce am făcut vara aceasta ca să mă dezvolt personal ce îmi doresc să fac după ce termin facultatea. Creați un obiect care să fie o reflexie a voastră și afișați aceste date. 5p
+2. Pornind de la codul din slide-ul următor, adăugați la metoda sortingAlg 5 metode de sortare a vectorului descrescator. 4p
+3. Realizați tutorialul de Kotlin de aici https://kotlinlang.org/docs/kotlin-tour-hello-world.html până la clase.

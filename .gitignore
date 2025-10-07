@@ -1,3 +1,6 @@
 # Visual Studio Code
 # Ignore the local VS Code folder (workspace settings, state, extensions cache)
 .vscode/
+
+# Ignore executable files
+*.out
