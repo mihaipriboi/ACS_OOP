@@ -5,3 +5,4 @@
 # Ignore executable files
 *.out
 *.exe
+*.jar
