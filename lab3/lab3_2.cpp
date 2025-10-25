@@ -1,14 +1,4 @@
-/*
-Să se realizeze o clasă Student. Această clasă trebuie să aibă următoarele atribute: nume, prenume, CNP, anul nașterii toate de tipul private, dar și numele facultății și anul înființării acesteia (tot private). 
-- Creați o funcție care să genereze automat CNP-uri. Explicați algoritmul din spate.
-- Creați metodele de get și set pentru Student. 0.5p
-- Creați o metodă care să întoarcă sexul studentului în funcție de CNP. 0.5p
-- Creați o metodă care să întoarcă vârsta studentului. 0.5p
-- Creați o metodă care să întoarcă diferența de ani dintre anul înființării facultății și data nașterii studentului. 0.5. p
-Utilizați this Pointer. 0.5p  Testați codul creând mai mulți studenți.
-*/
-
-#include <stdio.h>
+#include <iostream>
 #include <string>
 #include <stdlib.h>
 #include <time.h>
@@ -44,25 +34,19 @@ private:
     string S, AA, LL, ZZ, JJJ = "001", NNN = "001";
     int an = anul_nasterii;
 
-    if (an >= 1800 && an <= 1899)
+    if(an >= 1800 && an <= 1899)
       S = rand() % 2 == 0 ? "2" : "1";
-    else if (an >= 1900 && an <= 1999)
+    else if(an >= 1900 && an <= 1999)
       S = rand() % 2 == 0 ? "4" : "3";
-    else if (an >= 2000 && an <= 2099)
+    else if(an >= 2000 && an <= 2099)
       S = rand() % 2 == 0 ? "6" : "5";
 
     AA = to_string(an % 100);
-    if (AA.length() == 1)
+    if(AA.length() == 1)
       AA = "0" + AA;
-    
-    // random
-    LL = to_string(rand() % 12 + 1);
-    if (LL.length() == 1)
-      LL = "0" + LL;
-    
-    ZZ = to_string(rand() % 28 + 1);
-    if (ZZ.length() == 1)
-      ZZ = "0" + ZZ;
+
+    LL = "01";
+    ZZ = "01";
 
     // Cifra de control
     string CNP_partial = S + AA + LL + ZZ + JJJ + NNN;
@@ -71,6 +55,7 @@ private:
     int suma = 0;
     for(int i = 0; i < 12; i++)
       suma += (CNP_partial[i] - '0') * (constante[i] - '0');
+    
     int C = suma % 11;
     if(C == 10)
       C = 1;
@@ -79,6 +64,15 @@ private:
   }
 
 public:
+  Student() {
+    this->nume = "Anonim";
+    this->prenume = "Anonim";
+    this->anul_nasterii = 2000;
+    this->nume_facultate = "Necunoscut";
+    this->anul_infiintarii = 2000;
+    this->CNP = genereazaCNP();
+  }
+
   Student(string nume, string prenume, int anul_nasterii,
           string nume_facultate, int anul_infiintarii) {
     
@@ -90,7 +84,7 @@ public:
     this->CNP = genereazaCNP();
   }
 
-  // Setters
+  /* Setters */
 
   void setNume(string nume) {
     this->nume = nume;
@@ -115,7 +109,7 @@ public:
     this->anul_infiintarii = anul_infiintarii;
   }
 
-  // Getters
+  /* Getters */
 
   string getNume() { return this->nume; }
   string getPrenume() { return this->prenume; }
@@ -134,12 +128,46 @@ public:
     struct tm* now = localtime(&t);
     return now->tm_year + 1900 - this->anul_nasterii;
   }
+
+  int getDiferentaAni() {
+    return abs(this->anul_infiintarii - this->anul_nasterii);
+  }
+
+  void displayInfo() {
+    cout << "Nume: " << this->nume << '\n';
+    cout << "Prenume: " << this->prenume << '\n';
+    cout << "CNP: " << this->CNP << '\n';
+    cout << "Anul nasterii: " << this->anul_nasterii << '\n';
+    cout << "Nume facultate: " << this->nume_facultate << '\n';
+    cout << "Anul infiintarii: " << this->anul_infiintarii << '\n';
+    cout << "Sex: " << getSex() << '\n';
+    cout << "Varsta: " << getVarsta() << '\n';
+    cout << "Diferenta ani: " << getDiferentaAni() << "\n\n";
+  }
 };
 
 int main() {
   srand(time(0));
 
-  printf("schema ț");
+  Student st1("Zanoaga", "Ovidiu", 2007, "UPB", 1818);
+  Student st2;
+  Student st3("Klimt", "Gustav", 1960, "ASE", 1913);
+
+  st1.displayInfo();
+  st2.displayInfo();
+  st3.displayInfo();
+
+  st2.setNume("Musk");
+  st2.setPrenume("X Æ A-12");
+  st2.setAnulNasterii(2020);
+  st2.setNumeFacultate("SpaceX University");
+  st2.setAnulInfiintarii(2020);
+  st2.displayInfo();
+
+  cout << "Schimbare anul nasterii pentru st3 (se va schimba si prima cifra):\n";
+  cout << st3.getCNP() << '\n';
+  st3.setAnulNasterii(2000);
+  cout << st3.getCNP() << '\n';
 
   return 0;
 }

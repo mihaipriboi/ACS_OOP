@@ -17,7 +17,7 @@ NU VA PUNETI CNP-UL VOSTRU!
 - Date Partajate (Membru static): Toate conturile dintr-o bancă au aceeași dobândă. Vom modela acest lucru cu un membru private static double rataDobanda.
 - Acțiuni la Nivel de Clasă (Metode static): Adaugă o metodă public static void seteazaRataDobanda(double rataNoua). Această metodă va fi folosită de "bancă" pentru a schimba dobânda pentru toate conturile existente și viitoare. Se va apela direct pe clasă: ContBancar::seteazaRataDobanda(...). Adaugă o metodă non-statică numită aplicaDobanda(). Aceasta calculează dobânda pentru contul curent (sold * rataDobanda) și o adaugă la sold.
 
-3. [5p]. Testarea în main:
+Testarea în main:
 - Creează cel puțin două obiecte ContBancar (cont1, cont2) cu titulari și solduri diferite.
 - Efectuează câteva operații de depunere și retragere pe ambele conturi. Afișează soldurile după fiecare operație folosind getter-ele const. Afișează soldurile inițiale. Apoi, "banca" decide să mărească dobânda. Apelează metoda statică: ContBancar::seteazaRataDobanda(0.07);.
 - Apelează metoda aplicaDobanda() pentru fiecare cont în parte.
