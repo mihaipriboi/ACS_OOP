@@ -1,0 +1,6 @@
+- Daca gresesti numele metodei (ex: 'sond' in loc de 'sound') in clasa copil, programul compileaza.
+- Se apeleaza metoda din clasa parinte ('Animal'), nu cea din clasa copil ('Cat').
+- Daca adaugi 'override' la metoda cu nume gresit ('void sond() override'), programul nu mai compileaza.
+- Compilatorul da eroare: ‘void Cat::sond() const’ marked ‘override’, but does not override
+- Eroarea apare pentru ca 'override' promite ca metoda suprascrie o metoda virtuala din baza, dar compilatorul nu gaseste niciuna cu numele 'sond'.
+- Daca nu exista o metoda virtuala cu exact aceeasi semnatura (nume, parametri) in parinte, compilatorul te opreste cu o eroare.

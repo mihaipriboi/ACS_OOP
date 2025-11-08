@@ -1,7 +1,3 @@
-/*
-Creați o clasă “Volume” care să aibă o metodă supraîncărcată pentru a calcula și afișa volumul pentru cub, sferă și piramidă, plus o metodă care să aibă același nume și să afișeze un mesaj. 
-*/
-
 #include <stdio.h>
 #include <cmath>
 
