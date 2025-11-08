@@ -1,0 +1,4 @@
+3p[Kotlin][În Laborator] Creați o clasă “Volume” care să aibă o metodă supraîncărcată pentru a calcula și afișa volumul pentru cub, sferă și piramidă, plus o metodă care să aibă același nume și să afișeze un mesaj. 
+3p[Kotlin] Modelați o companie de angajați la care să aveți o moștenire multinivel pentru angajați (minim 3 clase, A- > B -> C). Fiecare clasă va avea 2 metode care pleacă din clasa de bază și sunt suprascrise în clasele copii.
+2p Creați o clasă care să aibă operatorul “+” overloaded și să fie folosit pentru concatenarea a două string-uri private ce aparțin de clasa respectivă iar operatorul “-” pentru separarea unui string dacă găsește simbolurile “.” sau “,”.
+1P Plecând de la exercițiul de la slide 13, în Clasa Cat stricați numele metodei sound (). Compilați și observați rezultatul. Apoi, adaugă override la funcția greșită și compilează din nou. Ce se întâmplă? Scrieți într-un fișier .txt observațiile și cum se folosește override.
