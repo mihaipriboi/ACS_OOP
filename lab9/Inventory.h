@@ -5,23 +5,36 @@
 
 class Inventory {
 private:
-    std::vector<Item*> items; // We store pointers because Item is abstract-ish
+    std::vector<Item*> items;
 
 public:
     Inventory() {
         std::cout << "Inventory created (Empty)\n";
     }
 
-    // INTERN NOTE: I didn't write a Copy Constructor because C++
-    // does it automatically, right? Less code = better!
+    // Copy constructor (deep copy)
+    Inventory(const Inventory& other) {
+        std::cout << "Inventory copy constructor (Deep Copy)\n";
+        for (auto i : other.items) {
+            items.push_back(i->clone());
+        }
+    }
+
+    // Copy assignment (deep copy)
+    Inventory& operator=(const Inventory& other) {
+        if (this != &other) {
+            for (auto i : items) delete i;
+            items.clear();
+            for (auto i : other.items) {
+                items.push_back(i->clone());
+            }
+        }
+        return *this;
+    }
 
     ~Inventory() {
         std::cout << "Inventory destructor: Cleaning up " << items.size() << " items...\n";
-        for (size_t i = 0; i < items.size(); i++) {
-            if (items[i] != nullptr) {
-                delete items[i]; // Delete the heap memory
-            }
-        }
+        for (auto i : items) delete i;
         items.clear();
     }
 
@@ -31,18 +44,15 @@ public:
 
     void listItems() const {
         std::cout << "\n--- Inventory Contents ---\n";
-        for (const auto& item : items) {
-            // Just printing the name for now
+        for (auto item : items) {
             std::cout << "- " << item->getName() << "\n";
         }
         std::cout << "--------------------------\n";
     }
 
-    // Helper to access items for testing
     Item* getItem(int index) {
-        if (index >= 0 && index < items.size()) {
-            return items[index];
-        }
-        return nullptr;
-    }
+    if (index >= 0 && static_cast<size_t>(index) < items.size())
+        return items[index];
+    return nullptr;
+}
 };
