@@ -80,7 +80,8 @@ int main() {
       unsigned long long value = fib->getNumber(n);
       cout << "[Fibonacci " << n << "] = " << value << "\n";
     } catch (const exception& e) {
-      cerr << e.what() << endl;
+      cerr << e.what() << '\n';
+      break;
     }
   }
 
