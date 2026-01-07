@@ -6,6 +6,8 @@
 #include "src/agents/AgentFactory.h"
 #include "src/logic/SimulationManager.h"
 #include "src/core/UIHelper.h"
+#include "src/logic/GreedyStrategy.h"
+#include "src/logic/OptimizedGreedyStrategy.h"
 
 #include <memory>
 #include <vector>
@@ -64,7 +66,7 @@ int main() {
       break; /* Success! Exit loop */
 
     } catch (const MapException& e) {
-      fprintf(stderr, "\a[MAP ERROR]: %s\n", e.what());
+      fprintf(stderr, "\a\033[1;31m[MAP ERROR]: %s\033[0m\n", e.what());
       if(gameMap) { delete gameMap; gameMap = nullptr; }
       if(generator) delete generator;
       printf("Please try again.\n\n");
@@ -81,10 +83,10 @@ int main() {
   /* Create the fleet defined in simulation_setup.txt*/
   for(int i = 0; i < config->getDronesCount(); i++) 
     fleet.push_back(AgentFactory::createAgent(AgentType::DRONE, idCounter++, hubX, hubY));
-  for(int i = 0; i < config->getRobotsCount(); i++) 
-    fleet.push_back(AgentFactory::createAgent(AgentType::ROBOT, idCounter++, hubX, hubY));
   for(int i = 0; i < config->getScootersCount(); i++) 
     fleet.push_back(AgentFactory::createAgent(AgentType::SCOOTER, idCounter++, hubX, hubY));
+  for(int i = 0; i < config->getRobotsCount(); i++) 
+    fleet.push_back(AgentFactory::createAgent(AgentType::ROBOT, idCounter++, hubX, hubY));
 
   printf("\n[Fleet initialized with %zu agents at Hub (%d, %d)]\n", fleet.size(), hubX, hubY);
   
@@ -95,7 +97,10 @@ int main() {
 
   SimulationManager sim(gameMap, fleet, pkgManager);
 
+  sim.setStrategy(new OptimizedGreedyStrategy());
+
   printf("\nPress [ENTER] to start the HiveMind simulation...");
+
   getchar();
 
   /* Main Simulation Loop */
@@ -103,16 +108,10 @@ int main() {
     sim.runSingleTick();
   }
 
-  /* Clear one last time for the final report */
-  printf("\033[H\033[J");
-  UIHelper::printHeader("Final Simulation Report");
+  sim.calculateFinalScore();
+  sim.renderUI();
   
-  /* Statistics to be calculated based on agent and package results */
-  printf("Total Cost: ...\n");
-  printf("Total Revenue: ...\n");
-  printf("Drones Lost: ...\n");
-  printf("Delivery Success Rate: ...\n");
-  
+  printf("\n");
   UIHelper::printHeader("Simulation Terminated");
   
   return 0;

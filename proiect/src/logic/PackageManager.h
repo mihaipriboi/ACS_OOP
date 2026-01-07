@@ -12,7 +12,7 @@ using namespace std;
 
 class PackageManager {
 private:
-  vector<unique_ptr<Package>> pendingPackages;
+  vector<unique_ptr<Package>> allPackages;
   vector<pair<int, int>> clientLocations;
   int idCounter;
 
@@ -25,6 +25,11 @@ public:
   /* Logic for spawning a package at the Hub */
   void spawnPackage(int currentTick);
   
-  const vector<unique_ptr<Package>>& getPendingPackages() const;
-  void removeDelivered();
+  Package* getPackageById(int id);
+  
+  vector<Package*> getPackagesAtHub();
+  vector<Package*> getPendingPackages();
+
+  void markAsInTransit(int pkgId, int agentId);
+  void markAsDelivered(int pkgId);
 };

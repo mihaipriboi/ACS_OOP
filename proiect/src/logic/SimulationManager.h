@@ -22,7 +22,18 @@ private:
   
   int currentTick;
   int maxTicks;
-  const int targetFPS = 10;
+  const int targetFPS = 30;
+
+  int totalCosts;
+  int totalPenalties;
+  int totalProfits;
+  int finalScore;
+  int packagesDelivered;
+  int packagesDeliveredLate;
+
+  const int AGENT_DEATH_PENALTY = 500;
+  const int PACKAGE_OVERDUE_PENALTY = 50;
+  const int PACKAGE_NOT_DELIVERED_PENALTY = 200;
 
 public:
   SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p);
@@ -30,7 +41,15 @@ public:
   void setStrategy(IDispatchStrategy* s) { strategy = s; }
   bool isFinished() const { return currentTick >= maxTicks; }
   int getCurrentTick() const { return currentTick; }
-  
+
+  void addCosts(int amount) { totalCosts += amount; finalScore -= amount; }
+  void addPenalties(int amount) { totalPenalties += amount; finalScore -= amount; }
+  void addProfits(int amount) { totalProfits += amount; finalScore += amount; }
+
   void runSingleTick();
+  void updateAgentPhysics(Agent* agent);
+  void processDeliveries(Agent* agent);
+  void calculateFinalScore();
+
   void renderUI();
 };
