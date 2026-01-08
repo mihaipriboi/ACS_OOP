@@ -20,9 +20,11 @@ private:
   PackageManager& pkgManager;       /* Reference to manager owned by main */
   IDispatchStrategy* strategy;
   
+  bool headlessMode;
+
   int currentTick;
   int maxTicks;
-  const int targetFPS = 30;
+  const int targetFPS = 50;
 
   int totalCosts;
   int totalPenalties;
@@ -36,7 +38,7 @@ private:
   const int PACKAGE_NOT_DELIVERED_PENALTY = 200;
 
 public:
-  SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p);
+  SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p, bool headless);
   
   void setStrategy(IDispatchStrategy* s) { strategy = s; }
   bool isFinished() const { return currentTick >= maxTicks; }
@@ -52,4 +54,11 @@ public:
   void calculateFinalScore();
 
   void renderUI();
+
+  int getCosts() const { return totalCosts; }
+  int getPenalties() const { return totalPenalties; }
+  int getProfits() const { return totalProfits; }
+  int getFinalScore() const { return finalScore; }
+  int getPackagesDelivered() const { return packagesDelivered; }
+  int getPackagesDeliveredLate() const { return packagesDeliveredLate; }
 };

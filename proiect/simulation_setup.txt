@@ -1,12 +1,20 @@
-MAP_SIZE: 30 80 // Dimensiuni harta
+MAP_SIZE: 20 20 // Dimensiuni harta
 MAX_TICKS: 1000 // Durata simularii
-MAX_STATIONS: 3 // Nr statii extra
+MAX_STATIONS: 5 // Nr statii extra
 CLIENTS_COUNT: 10 // Nr puncte de livrare (D)
-WALL_DENSITY: 20 // Procentaj de pereti in generarea procedurala
+
+WALL_DENSITY_RANDOM: 40 // Densitatea peretilor pentru generarea random (0-100)
+WALL_DENSITY_MAZE: 100 // Densitatea peretilor pentru generarea labirint (0-100)
+WALL_DENSITY_ARCHIPELAGO: 15 // Densitatea peretilor pentru generarea arhipelag (0-100)
+RADIAL_RING_SPACING: 5 // Distanta intre inele
+RADIAL_PLAZA_RADIUS: 3 // Raza plaza centrala
+RADIAL_RING_ROAD_WIDTH: 2 // Latimea drumului pe inele
+RADIAL_MAX_RINGS: 10 // Nr maxim de inele
+DISTRICT_BLOCK_SIZE: 4 // Dimensiunea blocului pentru District
 // Flota de start
 DRONES: 3
 ROBOTS: 2
 SCOOTERS: 1
 // Dinamica
-TOTAL_PACKAGES: 200
+TOTAL_PACKAGES: 98 // Ne asiguram ca nu raman pachete la final din cauza spawn-ului
 SPAWN_FREQUENCY: 10 // Apare un pachet la fiecare 10 ticks

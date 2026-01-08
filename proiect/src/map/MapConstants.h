@@ -11,6 +11,11 @@ enum class CellType {
   PATH = 5
 };
 
+enum class ValidationType {
+  STANDARD = 0,
+  DRONE = 1
+};
+
 /* Arrays to convert enum to char for display/file saving */
 const char CELL_CHARS[] = {'#', '.', 'B', 'S', 'D', 'P'};
 const std::string CELL_CHARS_TERMINAL[] = {"\u2588", "\u00b7", "\u25a3", "\u2295", "\u2302", "\u25CF"};

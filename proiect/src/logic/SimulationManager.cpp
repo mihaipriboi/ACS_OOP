@@ -5,9 +5,9 @@
 
 #include <cstdio>
 
-SimulationManager::SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p) 
+SimulationManager::SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p, bool headless) 
   : gameMap(m), fleet(f), pkgManager(p), currentTick(0), totalCosts(0), totalPenalties(0),
-   totalProfits(0), finalScore(0), packagesDelivered(0), packagesDeliveredLate(0), strategy(nullptr) {
+   totalProfits(0), finalScore(0), packagesDelivered(0), packagesDeliveredLate(0), strategy(nullptr), headlessMode(headless) {
   maxTicks = ConfigManager::getInstance()->getMaxTicks();
 }
 
@@ -35,9 +35,11 @@ void SimulationManager::runSingleTick() {
     strategy->execute(fleet, pkgManager, *gameMap);
   }
 
-  renderUI();
+  if(!headlessMode) {
+    renderUI();
+    this_thread::sleep_for(chrono::milliseconds(1000 / targetFPS));
+  }
   
-  this_thread::sleep_for(chrono::milliseconds(1000 / targetFPS));
   currentTick++;
 }
 
@@ -130,7 +132,7 @@ void SimulationManager::renderUI() {
   printf("\033[H\033[J");
   
   UIHelper::printHeader("HiveMind Live Simulation");
-  printf("Tick: %d / %d\n\n", currentTick, maxTicks);
+  printf(" Tick: %d / %d\n\n", currentTick, maxTicks);
 
   for(int i = 0; i < gameMap->getRows(); i++) {
     for(int j = 0; j < gameMap->getCols(); j++) {
@@ -176,19 +178,19 @@ void SimulationManager::renderUI() {
   }
 
   UIHelper::printHeader("Legend");
-  printf("Environment: %s:Wall  %s:Road  %s:Hub  %s:Station  %s:Client\n",
+  printf(" Environment: %s:Wall  %s:Road  %s:Hub  %s:Station  %s:Client\n",
          CELL_CHARS_TERMINAL[0].c_str(), CELL_CHARS_TERMINAL[1].c_str(), 
          CELL_CHARS_TERMINAL[2].c_str(), CELL_CHARS_TERMINAL[3].c_str(), 
          CELL_CHARS_TERMINAL[4].c_str());
-  printf("Agents:      %s:Drone %s:Robot %s:Scooter\n",
-         AGENT_CHARS_TERMINAL[0].c_str(), AGENT_CHARS_TERMINAL[1].c_str(), 
-         AGENT_CHARS_TERMINAL[2].c_str());
+  printf(" Agents:      %s:Drone  %s:Scooter  %s:Robot\n",
+         AGENT_CHARS_TERMINAL[0].c_str(), AGENT_CHARS_TERMINAL[2].c_str(), 
+         AGENT_CHARS_TERMINAL[1].c_str());
   
   printf("\n");
   UIHelper::printHeader("Financial Overview");
-  printf(" Total Costs:      %d credits\n", totalCosts);
-  printf(" Total Penalties:  %d credits\n", totalPenalties);
-  printf(" Total Profits:    %d credits\n", totalProfits);
+  printf(" Total Profits:    %s%d credits%s\n", GRN, totalProfits, RST);
+  printf(" Total Costs:      %s%d credits%s\n", YEL, totalCosts, RST);
+  printf(" Total Penalties:  %s%d credits%s\n\n", RED, totalPenalties, RST);
   if(finalScore < 0)
     printf(" Total Score:      %s%d credits%s\n", RED, finalScore, RST);
   else if(finalScore == 0)
@@ -232,23 +234,36 @@ void SimulationManager::renderUI() {
   }
 
   const auto& pkgs = pkgManager.getPendingPackages();
+  int overdueCount = 0;
 
   printf("\n");
   UIHelper::printHeader("Pending Packages");
   printf(" %-3s | %-11s | %-6s | %-8s\n", "ID", "Destination", "Reward", "Deadline");
   printf("-----|-------------|--------|----------\n");
   
-  for(const auto& p : pkgs) {
+  // reverse order to show the most recently spawned packages first
+  for(auto it = pkgs.rbegin(); it != pkgs.rend(); ++it) {
+    const auto& p = *it;
+
     int remaining = p->deadline - (currentTick - p->spawnTick);
 
     const char* timeCol = (remaining <= 3) ? YEL : RST;
 
     if(remaining > 6) { timeCol = GRN; } 
     else if(remaining >= 0 && remaining <= 3) { timeCol = YEL; } 
-    else { timeCol = RED; }
+    else { 
+      timeCol = RED;
+      overdueCount++; 
+    }
 
-    printf(" %02d  | (%2d, %2d)    | %4d   | %s%d ticks%s\n", 
-           p->id, p->destX, p->destY, p->reward, 
-           timeCol, remaining, RST);
+    if(overdueCount < 5 || timeCol != RED) {
+      printf(" %02d  | (%2d, %2d)    | %4d   | %s%d ticks%s\n", 
+             p->id, p->destX, p->destY, p->reward, 
+             timeCol, remaining, RST);
+    }
+  }
+
+  if(overdueCount >= 5) {
+    printf("%s ... and %d more overdue packages not shown ...%s\n", RED, overdueCount - 5, RST);
   }
 }

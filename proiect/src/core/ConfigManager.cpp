@@ -46,7 +46,14 @@ bool ConfigManager::loadConfig(const char* filename) {
       else if(strcmp(key, "SCOOTERS:") == 0) scootersCount = val;
       else if(strcmp(key, "TOTAL_PACKAGES:") == 0) totalPackages = val;
       else if(strcmp(key, "SPAWN_FREQUENCY:") == 0) spawnFrequency = val;
-      else if(strcmp(key, "WALL_DENSITY:") == 0) wallDensity = val;
+      else if(strcmp(key, "WALL_DENSITY_RANDOM:") == 0) wallDensityRandom = val;
+      else if(strcmp(key, "WALL_DENSITY_MAZE:") == 0) wallDensityMaze = val;
+      else if(strcmp(key, "WALL_DENSITY_ARCHIPELAGO:") == 0) wallDensityArchipelago = val;
+      else if(strcmp(key, "RADIAL_RING_SPACING:") == 0) radialRingSpacing = val;
+      else if(strcmp(key, "RADIAL_PLAZA_RADIUS:") == 0) radialPlazaRadius = val;
+      else if(strcmp(key, "RADIAL_RING_ROAD_WIDTH:") == 0) radialRingRoadWidth = val;
+      else if(strcmp(key, "RADIAL_MAX_RINGS:") == 0) radialMaxRings = val;
+      else if(strcmp(key, "DISTRICT_BLOCK_SIZE:") == 0) districtBlockSize = val;
     }
   }
 
@@ -67,7 +74,14 @@ void ConfigManager::printSettings() {
   printf("Robots: %d\n", robotsCount);
   printf("Scooters: %d\n", scootersCount);
   UIHelper::printHeader("Procedural Generation");
-  printf("Wall Density: %d%%\n", wallDensity);
+  printf("Wall Density (Random): %d%%\n", wallDensityRandom);
+  printf("Wall Density (Maze): %d%%\n", wallDensityMaze);
+  printf("Wall Density (Archipelago): %d%%\n", wallDensityArchipelago);
+  printf("Radial Ring Spacing: %d\n", radialRingSpacing);
+  printf("Radial Plaza Radius: %d\n", radialPlazaRadius);
+  printf("Radial Ring Road Width: %d\n", radialRingRoadWidth);
+  printf("Radial Max Rings: %d\n", radialMaxRings);
+  printf("District Block Size: %d\n", districtBlockSize);
   UIHelper::printHeader();
   printf("\n");
 }

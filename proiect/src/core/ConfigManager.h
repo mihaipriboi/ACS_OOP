@@ -25,7 +25,16 @@ private:
   int totalPackages;
   int spawnFrequency;
 
-  int wallDensity; // Percentage of walls in procedural generation
+  int wallDensityRandom;      // Percentage of walls in random generation
+  int wallDensityMaze;        // Percentage of walls in maze generation
+  int wallDensityArchipelago; // Percentage of walls in archipelago generation
+
+  int radialRingSpacing;      // Spacing between rings in radial generation
+  int radialPlazaRadius;      // Radius of the central plaza in radial generation
+  int radialRingRoadWidth;    // Width of the ring roads in radial generation
+  int radialMaxRings;         // Maximum number of rings in radial generation
+
+  int districtBlockSize;      // Block size for district generation
 
 public:
   static ConfigManager* getInstance();
@@ -44,8 +53,15 @@ public:
   int getScootersCount() const { return scootersCount; }
   int getTotalPackages() const { return totalPackages; }
   int getSpawnFrequency() const { return spawnFrequency; }
-  int getWallDensity() const { return wallDensity; }
-  
+  int getWallDensityRandom() const { return wallDensityRandom; }
+  int getWallDensityMaze() const { return wallDensityMaze; }
+  int getWallDensityArchipelago() const { return wallDensityArchipelago; }
+  int getRadialRingSpacing() const { return radialRingSpacing; }
+  int getRadialPlazaRadius() const { return radialPlazaRadius; }
+  int getRadialRingRoadWidth() const { return radialRingRoadWidth; }
+  int getRadialMaxRings() const { return radialMaxRings; }
+  int getDistrictBlockSize() const { return districtBlockSize; }
+
   /* Displays the current configuration in the terminal */
   void printSettings();
 };

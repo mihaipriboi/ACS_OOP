@@ -65,6 +65,7 @@ public:
   int getSpeed() const { return speed; }
   int getCapacity() const { return capacity; }
   int getCostPerTick() const { return costPerTick; }
+  int getConsumption() const { return consumption; }
   int getId() const { return id; }
   
   AgentType getType() const { return type; }

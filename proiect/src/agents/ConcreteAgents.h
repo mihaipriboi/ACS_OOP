@@ -6,19 +6,19 @@
 
 #include <memory>
 
-/* * Drones: High speed (3), ignores walls[cite: 38].
- * High maintenance cost and consumption[cite: 38].
+/* * Drones: High speed (3), ignores walls.
+ * High maintenance cost and consumption.
  */
 class Drone : public Agent {
 public:
   Drone(int id, int x, int y) 
     : Agent(id, AgentType::DRONE, x, y, make_unique<LinearPathAlgorithm>()) {
-    speed = 3;             /* 3 cells per tick [cite: 38] */
-    battery = 100;         /* 100 max battery [cite: 38] */
-    maxBattery = 100;      /* [cite: 38] */
-    consumption = 10;      /* 10 bat/tick [cite: 38] */
-    costPerTick = 15;      /* 15 $/tick [cite: 38] */
-    capacity = 1;          /* 1 package [cite: 38] */
+    speed = 3;
+    battery = 100;
+    maxBattery = 100;
+    consumption = 10;
+    costPerTick = 15;
+    capacity = 1;
   }
   
   char getSymbol() const override { 
@@ -30,19 +30,19 @@ public:
   }
 };
 
- /* * Robots: Slow (1)[cite: 38].
- * Low maintenance, high capacity[cite: 38].
+ /* * Robots: Slow (1).
+ * Low maintenance, high capacity.
  */
 class Robot : public Agent {
 public:
   Robot(int id, int x, int y) 
     : Agent(id, AgentType::ROBOT, x, y, make_unique<AStarAlgorithm>()) {
-    speed = 1;             /* 1 cell per tick [cite: 38] */
-    battery = 300;         /* 300 max battery [cite: 38] */
-    maxBattery = 300;      /* [cite: 38] */
-    consumption = 2;       /* 2 bat/tick [cite: 38] */
-    costPerTick = 1;       /* 1 $/tick [cite: 38] */
-    capacity = 4;          /* 4 packages [cite: 38] */
+    speed = 1;
+    battery = 300;
+    maxBattery = 300;
+    consumption = 2;
+    costPerTick = 1;
+    capacity = 4;
   }
   
   char getSymbol() const override { 
@@ -54,19 +54,19 @@ public:
   }
 };
 
- /* * Scooters: Moderate speed (2)[cite: 38].
- * Balanced stats[cite: 38].
+ /* * Scooters: Moderate speed (2).
+ * Balanced stats.
  */
 class Scooter : public Agent {
 public:
   Scooter(int id, int x, int y) 
     : Agent(id, AgentType::SCOOTER, x, y, make_unique<AStarAlgorithm>()) {
-    speed = 2;             /* 2 cells per tick [cite: 38] */
-    battery = 200;         /* 200 max battery [cite: 38] */
-    maxBattery = 200;      /* [cite: 38] */
-    consumption = 5;       /* 5 bat/tick [cite: 38] */
-    costPerTick = 4;       /* 4 $/tick [cite: 38] */
-    capacity = 2;          /* 2 packages [cite: 38] */
+    speed = 2;
+    battery = 200;
+    maxBattery = 200;
+    consumption = 5;
+    costPerTick = 4;
+    capacity = 2;
   }
   
   char getSymbol() const override { 

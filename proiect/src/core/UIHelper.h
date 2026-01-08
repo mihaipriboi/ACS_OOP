@@ -6,7 +6,7 @@
 class UIHelper {
 public:
   static void printHeader(const char* text = "") {
-    int totalWidth = 40;
+    int totalWidth = 60;
     int textLen = strlen(text);
     if(textLen == 0) {
       for(int i = 0; i < totalWidth; i++) printf("~");

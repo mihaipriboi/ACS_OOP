@@ -14,9 +14,13 @@ private:
   int hubX, hubY; /* Hub coordinates */
   vector<vector<CellType>> grid;
 
+  static ValidationType validationType;
+
 public:
   Map(int r, int c);
   
+  static void setValidationType(ValidationType type) { validationType = type; }
+
   void setCell(int r, int c, CellType type);
   CellType getCell(int r, int c) const;
   
@@ -25,7 +29,12 @@ public:
   int getHubX() const { return hubX; }
   int getHubY() const { return hubY; }
 
-  bool validate() const; 
+  bool validate() const;
+  /* Standard validation for ground agents (BFS) */
+  bool validateStandard() const;
+  /* Specialized drone validation for energy-constrained flight */
+  bool validateDroneAccessible() const;
+
   void display() const;
   void saveToFile(const char* filename) const;
 };
