@@ -36,6 +36,12 @@ private:
 
   int districtBlockSize;      // Block size for district generation
 
+  int agentDeathPenalty;
+  int packageOverduePenalty;
+  int packageNotDeliveredPenalty;
+
+  int targetFPS;
+
 public:
   static ConfigManager* getInstance();
 
@@ -61,6 +67,10 @@ public:
   int getRadialRingRoadWidth() const { return radialRingRoadWidth; }
   int getRadialMaxRings() const { return radialMaxRings; }
   int getDistrictBlockSize() const { return districtBlockSize; }
+  int getAgentDeathPenalty() const { return agentDeathPenalty; }
+  int getPackageOverduePenalty() const { return packageOverduePenalty; }
+  int getPackageNotDeliveredPenalty() const { return packageNotDeliveredPenalty; }
+  int getTargetFPS() const { return targetFPS; }
 
   /* Displays the current configuration in the terminal */
   void printSettings();

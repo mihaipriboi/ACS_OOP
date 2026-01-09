@@ -37,4 +37,5 @@ public:
 
   void display() const;
   void saveToFile(const char* filename) const;
+  void saveToFile(FILE* file) const;
 };

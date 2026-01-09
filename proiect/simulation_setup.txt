@@ -1,20 +1,30 @@
-MAP_SIZE: 20 20 // Dimensiuni harta
+MAP_SIZE: 20 50 // Dimensiuni harta
 MAX_TICKS: 1000 // Durata simularii
-MAX_STATIONS: 5 // Nr statii extra
-CLIENTS_COUNT: 10 // Nr puncte de livrare (D)
+MAX_STATIONS: 15 // Nr statii extra
+CLIENTS_COUNT: 15 // Nr puncte de livrare (D)
 
-WALL_DENSITY_RANDOM: 40 // Densitatea peretilor pentru generarea random (0-100)
+WALL_DENSITY_RANDOM: 35 // Densitatea peretilor pentru generarea random (0-100)
 WALL_DENSITY_MAZE: 100 // Densitatea peretilor pentru generarea labirint (0-100)
-WALL_DENSITY_ARCHIPELAGO: 15 // Densitatea peretilor pentru generarea arhipelag (0-100)
-RADIAL_RING_SPACING: 5 // Distanta intre inele
-RADIAL_PLAZA_RADIUS: 3 // Raza plaza centrala
-RADIAL_RING_ROAD_WIDTH: 2 // Latimea drumului pe inele
-RADIAL_MAX_RINGS: 10 // Nr maxim de inele
+WALL_DENSITY_ARCHIPELAGO: 25 // Densitatea peretilor pentru generarea arhipelag (0-100)
+RADIAL_RING_SPACING: 6 // Distanta intre inele
+RADIAL_PLAZA_RADIUS: 4 // Raza plaza centrala
+RADIAL_RING_ROAD_WIDTH: 3 // Latimea drumului pe inele
+RADIAL_MAX_RINGS: 4 // Nr maxim de inele
 DISTRICT_BLOCK_SIZE: 4 // Dimensiunea blocului pentru District
+
 // Flota de start
 DRONES: 3
 ROBOTS: 2
-SCOOTERS: 1
+SCOOTERS: 2
+
 // Dinamica
-TOTAL_PACKAGES: 98 // Ne asiguram ca nu raman pachete la final din cauza spawn-ului
-SPAWN_FREQUENCY: 10 // Apare un pachet la fiecare 10 ticks
+TOTAL_PACKAGES: 1000 // Ne asiguram ca nu raman pachete la final din cauza spawn-ului
+SPAWN_FREQUENCY: 4 // Apare un pachet la fiecare 10 ticks
+
+// Penalizari
+AGENT_DEATH_PENALTY: 500 // Penalizare pentru moartea unui agent
+PACKAGE_OVERDUE_PENALTY: 50 // Penalizare pentru pachet intarziat
+PACKAGE_NOT_DELIVERED_PENALTY: 200 // Penalizare pentru pachet nelivrat
+
+// Simulare
+TARGET_FPS: 100 // Ticks pe secunda

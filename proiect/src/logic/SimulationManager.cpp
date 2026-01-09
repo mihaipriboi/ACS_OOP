@@ -9,6 +9,10 @@ SimulationManager::SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, Packa
   : gameMap(m), fleet(f), pkgManager(p), currentTick(0), totalCosts(0), totalPenalties(0),
    totalProfits(0), finalScore(0), packagesDelivered(0), packagesDeliveredLate(0), strategy(nullptr), headlessMode(headless) {
   maxTicks = ConfigManager::getInstance()->getMaxTicks();
+  targetFPS = ConfigManager::getInstance()->getTargetFPS();
+  AGENT_DEATH_PENALTY = ConfigManager::getInstance()->getAgentDeathPenalty();
+  PACKAGE_OVERDUE_PENALTY = ConfigManager::getInstance()->getPackageOverduePenalty();
+  PACKAGE_NOT_DELIVERED_PENALTY = ConfigManager::getInstance()->getPackageNotDeliveredPenalty();
 }
 
 void SimulationManager::runSingleTick() {
@@ -55,7 +59,7 @@ void SimulationManager::updateAgentPhysics(Agent* agent) {
     if(agent->getBattery() < agent->getMaxBattery()) {
       agent->setState(AgentState::CHARGING);
       agent->chargeTick();
-    } else if(agent->getState() == AgentState::CHARGING || currentCell == CellType::HUB) {
+    } else {
       agent->setState(AgentState::IDLE);
     }
   } else if(agent->getState() == AgentState::MOVING) {

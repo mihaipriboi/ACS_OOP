@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PackageManager.h"
-#include "IDispatchStrategy.h"
+#include "../strategies/IDispatchStrategy.h"
 #include "../map/Map.h"
 #include "../agents/Agent.h"
 #include "../core/ConfigManager.h"
@@ -24,7 +24,7 @@ private:
 
   int currentTick;
   int maxTicks;
-  const int targetFPS = 50;
+  int targetFPS = 50; /* Default */
 
   int totalCosts;
   int totalPenalties;
@@ -33,9 +33,9 @@ private:
   int packagesDelivered;
   int packagesDeliveredLate;
 
-  const int AGENT_DEATH_PENALTY = 500;
-  const int PACKAGE_OVERDUE_PENALTY = 50;
-  const int PACKAGE_NOT_DELIVERED_PENALTY = 200;
+  int AGENT_DEATH_PENALTY;
+  int PACKAGE_OVERDUE_PENALTY;
+  int PACKAGE_NOT_DELIVERED_PENALTY;
 
 public:
   SimulationManager(Map* m, vector<unique_ptr<Agent>>& f, PackageManager& p, bool headless);

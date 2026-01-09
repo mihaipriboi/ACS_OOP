@@ -10,33 +10,47 @@
 
 using namespace std;
 
-/* * GreedyNoDeathStrategy Strategy:
- * 1. Assigns packages to IDLE agents at the Hub if battery is 100% and they have enough range.
+/* * AdvancedHiveStrategy:
+ * 1. Assigns packages to IDLE agents at the Hub if they can complete the round trip with current battery.
  * 2. Prioritizes faster agents (Drones > Scooters > Robots) for assignments.
  * 3. Implements range check to ensure agents can complete round trip.
  * 4. Automatically returns agents to the Hub if they have no current path.
  */
 
-class GreedyNoDeathStrategy : public IDispatchStrategy {
+class AdvancedHiveStrategy : public IDispatchStrategy {
 private:
-  /* Manhattan distance helper for grid-based range calculation */
-  int calculateDistance(int x1, int y1, int x2, int y2) {
-    return abs(x1 - x2) + abs(y1 - y2);
+  int getActualPathDistance(Agent* agent, int x1, int y1, int x2, int y2, const Map& map) {
+    if(x1 == x2 && y1 == y2) return 0;
+
+    if(agent->canPassWalls()) {
+      LinearPathAlgorithm lpa;
+      vector<pair<int, int>> path = lpa.calculatePath(x1, y1, x2, y2, map);
+      if(path.empty()) return 999999;
+      return (int)path.size();
+    }
+
+    /* Ground units must use A* to find a valid route  */
+    AStarAlgorithm astar;
+    vector<pair<int, int>> path = astar.calculatePath(x1, y1, x2, y2, map);
+
+    /* If no path exists, return a value representing infinity */
+    if(path.empty()) return 999999;
+    return (int)path.size();
   }
 
-  /* * Range Check Logic:
-   * Max Steps = (Current Battery / Consumption per Tick) * Speed
-   * Safety: Max Steps must be >= (Distance to Client + Distance back to Hub)
-   */
-  bool hasEnoughRange(Agent* agent, int destX, int destY, int hubX, int hubY) {
-    int distToClient = calculateDistance(agent->getX(), agent->getY(), destX, destY);
-    int distBackToHub = calculateDistance(destX, destY, hubX, hubY);
-    int totalDist = distToClient + distBackToHub;
+  bool hasEnoughRange(Agent* agent, int destX, int destY, int hubX, int hubY, const Map& map) {
+    int distToClient = getActualPathDistance(agent, agent->getX(), agent->getY(), destX, destY, map);
+    int distBackToHub = getActualPathDistance(agent, destX, destY, hubX, hubY, map);
+    int totalSteps = distToClient + distBackToHub;
 
-    int maxTicksAvailable = agent->getBattery() / agent->getConsumption();
-    int maxDistanceAvailable = maxTicksAvailable * agent->getSpeed();
+    /* If any segment is unreachable, the agent cannot take the package */
+    if(totalSteps >= 999999) return false;
 
-    return maxDistanceAvailable >= totalDist;
+    int tripTicks = (int)ceil((double)totalSteps / agent->getSpeed()) + 2; /* +2 ticks for loading/unloading */
+
+    int requiredBattery = tripTicks * agent->getConsumption();
+
+    return requiredBattery <= agent->getBattery();
   }
 
 public:
@@ -55,11 +69,10 @@ public:
         for(AgentType type : priority) {
           for(auto& agent : fleet) {
             if(agent->getType() == type && 
-              agent->getState() == AgentState::IDLE && 
-              agent->getBattery() >= agent->getMaxBattery() &&
+              agent->getState() != AgentState::DEAD && 
               agent->canLoadMore()) {
               
-              if(hasEnoughRange(agent.get(), pkg->destX, pkg->destY, hubX, hubY)) {
+              if(hasEnoughRange(agent.get(), pkg->destX, pkg->destY, hubX, hubY, map)) {
                 bestAgent = agent.get();
                 break;
               }

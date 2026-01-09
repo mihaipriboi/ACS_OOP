@@ -54,6 +54,10 @@ bool ConfigManager::loadConfig(const char* filename) {
       else if(strcmp(key, "RADIAL_RING_ROAD_WIDTH:") == 0) radialRingRoadWidth = val;
       else if(strcmp(key, "RADIAL_MAX_RINGS:") == 0) radialMaxRings = val;
       else if(strcmp(key, "DISTRICT_BLOCK_SIZE:") == 0) districtBlockSize = val;
+      else if(strcmp(key, "AGENT_DEATH_PENALTY:") == 0) agentDeathPenalty = val;
+      else if(strcmp(key, "PACKAGE_OVERDUE_PENALTY:") == 0) packageOverduePenalty = val;
+      else if(strcmp(key, "PACKAGE_NOT_DELIVERED_PENALTY:") == 0) packageNotDeliveredPenalty = val;
+      else if(strcmp(key, "TARGET_FPS:") == 0) targetFPS = val;
     }
   }
 
@@ -73,6 +77,10 @@ void ConfigManager::printSettings() {
   printf("Drones: %d\n", dronesCount);
   printf("Robots: %d\n", robotsCount);
   printf("Scooters: %d\n", scootersCount);
+  UIHelper::printHeader("Penalties");
+  printf("Agent Death Penalty: %d\n", agentDeathPenalty);
+  printf("Package Overdue Penalty: %d\n", packageOverduePenalty);
+  printf("Package Not Delivered Penalty: %d\n", packageNotDeliveredPenalty);
   UIHelper::printHeader("Procedural Generation");
   printf("Wall Density (Random): %d%%\n", wallDensityRandom);
   printf("Wall Density (Maze): %d%%\n", wallDensityMaze);
@@ -82,6 +90,8 @@ void ConfigManager::printSettings() {
   printf("Radial Ring Road Width: %d\n", radialRingRoadWidth);
   printf("Radial Max Rings: %d\n", radialMaxRings);
   printf("District Block Size: %d\n", districtBlockSize);
+  UIHelper::printHeader("Simulation Settings");
+  printf("Target FPS: %d\n", targetFPS);
   UIHelper::printHeader();
   printf("\n");
 }

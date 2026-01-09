@@ -84,7 +84,6 @@ bool Map::validateStandard() const {
       }
     }
   }
-
   if(startR == -1) return false;
 
   /* Multi-stage BFS: Stations act as relay points */
@@ -232,4 +231,15 @@ void Map::saveToFile(const char* filename) const {
     fprintf(file, "\n");
   }
   fclose(file);
+}
+
+void Map::saveToFile(FILE* file) const {
+  if(!file) return;
+  fprintf(file, "%d %d\n", rows, cols);
+  for(int i = 1; i <= rows; i++) {
+    for(int j = 1; j <= cols; j++) {
+      fprintf(file, "%c", CELL_CHARS[(int)grid[i][j]]);
+    }
+    fprintf(file, "\n");
+  }
 }

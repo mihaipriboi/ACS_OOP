@@ -10,10 +10,14 @@
 #include "src/map/DistrictMapGenerator.h"
 #include "src/map/MapExceptions.h"
 #include "src/agents/AgentFactory.h"
-#include "src/logic/SimulationManager.h"
 #include "src/core/UIHelper.h"
-#include "src/logic/GreedyStrategy.h"
-#include "src/logic/GreedyNoDeathStrategy.h"
+#include "src/logic/SimulationManager.h"
+#include "src/logic/PackageManager.h"
+#include "src/strategies/IDispatchStrategy.h"
+#include "src/strategies/GreedyStrategy.h"
+#include "src/strategies/NoDeathStrategy.h"
+#include "src/strategies/ChargingStrategy.h"
+#include "src/strategies/AdvancedHiveStrategy.h"
 
 #include <memory>
 #include <vector>
@@ -148,27 +152,35 @@ int main() {
   char strategyChoice;
   do {
     printf("\nSelect the displayed delivery strategy (the others will run in the background):\n");
-    printf("1. Greedy Strategy\n");
-    printf("2. Greedy No Death Strategy\n");
-    printf("Enter choice (1-2, default 1): ");
+    printf("1. Greedy\n");
+    printf("2. No Deaths\n");
+    printf("3. Station Aware\n");
+    printf("4. Advanced Hive\n");
+    printf("Enter choice (1-4, default 4): ");
     strategyChoice = getchar();
-    if(strategyChoice == '\n') { strategyChoice = '1'; break; }
+    if(strategyChoice == '\n') { strategyChoice = '4'; break; }
     while(getchar() != '\n');
-  } while (strategyChoice < '1' || strategyChoice > '2');
+  } while (strategyChoice < '1' || strategyChoice > '4');
 
   switch(strategyChoice) {
-    case '2': sim.setStrategy(new GreedyNoDeathStrategy()); break;
-    default: sim.setStrategy(new GreedyStrategy()); break;
+    case '1': sim.setStrategy(new GreedyStrategy()); break;
+    case '2': sim.setStrategy(new NoDeathStrategy()); break;
+    case '3': sim.setStrategy(new ChargingStrategy()); break;
+    default: sim.setStrategy(new AdvancedHiveStrategy()); break;
   }
 
   /* Array that holds all simulation strategies */
   vector<IDispatchStrategy*> strategies;
   strategies.push_back(new GreedyStrategy());
-  strategies.push_back(new GreedyNoDeathStrategy());
+  strategies.push_back(new NoDeathStrategy());
+  strategies.push_back(new ChargingStrategy());
+  strategies.push_back(new AdvancedHiveStrategy());
 
   vector<string> strategyNames = {
-    "Greedy Strategy", 
-    "Greedy No Death Strategy"
+    "Greedy", 
+    "No Deaths",
+    "Station Aware",
+    "Advanced Hive"
   };
 
   /* Array of Simulation Managers for each strategy */
@@ -234,23 +246,62 @@ int main() {
   UIHelper::printHeader("Strategy Comparison");
   
   // Header with fixed widths
-  printf("%-27s | %-10s | %-10s | %-10s | %-12s | %-9s | %-10s\n", 
-         "Strategy", "Costs", "Penalties", "Profits", "Final Score", "Delivered", "Late");
-  printf("----------------------------|------------|------------|------------|--------------|-----------|-----------\n");
+  printf(" %-22s | %-12s | %-10s | %-10s | %-10s | %-9s | %-10s\n", 
+         "Strategy", "Final Score", "Costs", "Penalties", "Profits", "Delivered", "Late");
+  printf("------------------------|--------------|------------|------------|------------|-----------|--------\n");
 
   for(size_t i = 0; i < simulations.size(); i++) {
     int score = simulations[i]->getFinalScore();
     const char* scoreCol = (score > 0) ? GRN : (score < 0 ? RED : RST);
     
-    printf("%-27s | %s%-10d%s | %s%-10d%s | %s%-10d%s | %s%-12d%s | %-9d | %s%-10d%s\n", 
+    printf(" %-22s | %s%-12d%s | %s%-10d%s | %s%-10d%s | %s%-10d%s | %-9d | %s%-10d%s\n", 
       strategyNames[i].c_str(),
+      scoreCol, score, RST,
       YEL, simulations[i]->getCosts(), RST,
       RED, simulations[i]->getPenalties(), RST,
       GRN, simulations[i]->getProfits(), RST,
-      scoreCol, score, RST,
       simulations[i]->getPackagesDelivered(),
       RED, simulations[i]->getPackagesDeliveredLate(), RST
     );
+  }
+
+  /* Output final statistics for each strategy to file */
+  FILE* statsFile = fopen("output/strategy_comparison.txt", "w");
+  if(statsFile) {
+    fprintf(statsFile, "Strategy Comparison\n");
+    fprintf(statsFile, "Strategy               | Final Score | Penalties | Profits   | Costs     | Delivered | Late      \n");
+    fprintf(statsFile, "-----------------------|-------------|-----------|-----------|-----------|-----------|-----------\n");
+    for(size_t i = 0; i < simulations.size(); i++) {
+      fprintf(statsFile, "%-22s | %-11d | %-9d | %-9d | %-9d | %-9d | %-9d\n", 
+        strategyNames[i].c_str(),
+        simulations[i]->getFinalScore(),
+        simulations[i]->getPenalties(),
+        simulations[i]->getProfits(),
+        simulations[i]->getCosts(),
+        simulations[i]->getPackagesDelivered(),
+        simulations[i]->getPackagesDeliveredLate()
+      );
+    }
+
+    fprintf(statsFile, "\nSimulated Map\n");
+    gameMap->saveToFile(statsFile);
+
+    fprintf(statsFile, "\nFleet Composition\n");
+    fprintf(statsFile, "Agent Type | Count\n");
+    fprintf(statsFile, "-----------|------\n");
+    fprintf(statsFile, "Drones     | %d\n", config->getDronesCount());
+    fprintf(statsFile, "Scooters   | %d\n", config->getScootersCount());
+    fprintf(statsFile, "Robots     | %d\n", config->getRobotsCount());
+
+    fprintf(statsFile, "\nSimulation Parameters\n");
+    fprintf(statsFile, "Max Ticks: %d\n", config->getMaxTicks());
+    fprintf(statsFile, "Total Packages: %d\n", config->getTotalPackages());
+    fprintf(statsFile, "Package Spawn Frequency: %d ticks\n", config->getSpawnFrequency());
+
+    fclose(statsFile);
+    printf("\n[Strategy comparison saved to output/strategy_comparison.txt]\n");
+  } else {
+    fprintf(stderr, "\a\033[1;31m[ERROR]: Could not write strategy comparison to file.\033[0m\n");
   }
   
   return 0;
