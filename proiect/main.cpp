@@ -15,9 +15,9 @@
 #include "src/logic/PackageManager.h"
 #include "src/strategies/IDispatchStrategy.h"
 #include "src/strategies/GreedyStrategy.h"
-#include "src/strategies/NoDeathStrategy.h"
+#include "src/strategies/GreedyOptimizedStrategy.h"
+#include "src/strategies/NoDeathsStrategy.h"
 #include "src/strategies/ChargingStrategy.h"
-#include "src/strategies/AdvancedHiveStrategy.h"
 
 #include <memory>
 #include <vector>
@@ -143,45 +143,41 @@ int main() {
   
   /* Package Manager Initialization */
 
-  PackageManager pkgManager;
+  uint32_t pkgSeed = rand() % 100000;
+
+  PackageManager pkgManager(pkgSeed);
   pkgManager.discoverClients(*gameMap);
 
   SimulationManager sim(gameMap, fleet, pkgManager, false);
 
-  /* Ask user for delivery strategy */
-  char strategyChoice;
-  do {
-    printf("\nSelect the displayed delivery strategy (the others will run in the background):\n");
-    printf("1. Greedy\n");
-    printf("2. No Deaths\n");
-    printf("3. Station Aware\n");
-    printf("4. Advanced Hive\n");
-    printf("Enter choice (1-4, default 4): ");
-    strategyChoice = getchar();
-    if(strategyChoice == '\n') { strategyChoice = '4'; break; }
-    while(getchar() != '\n');
-  } while (strategyChoice < '1' || strategyChoice > '4');
-
-  switch(strategyChoice) {
-    case '1': sim.setStrategy(new GreedyStrategy()); break;
-    case '2': sim.setStrategy(new NoDeathStrategy()); break;
-    case '3': sim.setStrategy(new ChargingStrategy()); break;
-    default: sim.setStrategy(new AdvancedHiveStrategy()); break;
-  }
-
   /* Array that holds all simulation strategies */
   vector<IDispatchStrategy*> strategies;
   strategies.push_back(new GreedyStrategy());
-  strategies.push_back(new NoDeathStrategy());
+  strategies.push_back(new GreedyOptimizedStrategy());
   strategies.push_back(new ChargingStrategy());
-  strategies.push_back(new AdvancedHiveStrategy());
+  strategies.push_back(new NoDeathsStrategy());
 
-  vector<string> strategyNames = {
-    "Greedy", 
-    "No Deaths",
-    "Station Aware",
-    "Advanced Hive"
-  };
+  /* Ask user for delivery strategy */
+  size_t strategyChoice;
+  do {
+    printf("\nSelect the displayed delivery strategy (the others will run in the background):\n");
+    for(size_t i = 0; i < strategies.size(); i++) {
+      printf("%zu. %s\n", i + 1, strategies[i]->getName());
+    }
+    printf("Enter choice (1-%zu, default %zu): ", strategies.size(), strategies.size());
+    /* Read user input (number/enter) */
+    char input[10];
+    fgets(input, sizeof(input), stdin);
+    if(input[0] == '\n') { strategyChoice = strategies.size(); break; }
+    strategyChoice = atoi(input);
+  } while (strategyChoice < 1 || strategyChoice > strategies.size());
+
+  switch(strategyChoice){
+  case 1: sim.setStrategy(new GreedyStrategy()); break;
+  case 2: sim.setStrategy(new GreedyOptimizedStrategy()); break;
+  case 3: sim.setStrategy(new ChargingStrategy()); break;
+  case 4: sim.setStrategy(new NoDeathsStrategy()); break;
+  }
 
   /* Array of Simulation Managers for each strategy */
   vector<SimulationManager*> simulations;
@@ -189,7 +185,7 @@ int main() {
   /* Array of Package Managers for each simulation */
   vector<PackageManager*> pkgManagers;
   for(size_t i = 0; i < strategies.size(); i++) {
-    pkgManagers.push_back(new PackageManager());
+    pkgManagers.push_back(new PackageManager(pkgSeed));
     pkgManagers.back()->discoverClients(*gameMap);
   }
 
@@ -255,7 +251,7 @@ int main() {
     const char* scoreCol = (score > 0) ? GRN : (score < 0 ? RED : RST);
     
     printf(" %-22s | %s%-12d%s | %s%-10d%s | %s%-10d%s | %s%-10d%s | %-9d | %s%-10d%s\n", 
-      strategyNames[i].c_str(),
+      strategies[i]->getName(),
       scoreCol, score, RST,
       YEL, simulations[i]->getCosts(), RST,
       RED, simulations[i]->getPenalties(), RST,
@@ -273,7 +269,7 @@ int main() {
     fprintf(statsFile, "-----------------------|-------------|-----------|-----------|-----------|-----------|-----------\n");
     for(size_t i = 0; i < simulations.size(); i++) {
       fprintf(statsFile, "%-22s | %-11d | %-9d | %-9d | %-9d | %-9d | %-9d\n", 
-        strategyNames[i].c_str(),
+        strategies[i]->getName(),
         simulations[i]->getFinalScore(),
         simulations[i]->getPenalties(),
         simulations[i]->getProfits(),

@@ -14,6 +14,8 @@ using namespace std;
  */
 class GreedyStrategy : public IDispatchStrategy {
 public:
+  const char* getName() const override { return "Greedy"; }
+
   void execute(vector<unique_ptr<Agent>>& fleet, PackageManager& pkgManager, const Map& map) override {
     int hubX = map.getHubX();
     int hubY = map.getHubY();

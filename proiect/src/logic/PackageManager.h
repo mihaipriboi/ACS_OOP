@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <cstdlib>
+#include <random>
 
 using namespace std;
 
@@ -16,8 +17,10 @@ private:
   vector<pair<int, int>> clientLocations;
   int idCounter;
 
+  mt19937 rng;
+
 public:
-  PackageManager();
+  PackageManager(uint32_t seed = 12345) : idCounter(0), rng(seed) {}
   
   /* Scans map to find all Client (D) coordinates  */
   void discoverClients(const Map& map);

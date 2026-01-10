@@ -1,7 +1,5 @@
 #include "PackageManager.h"
 
-PackageManager::PackageManager() : idCounter(0) {}
-
 void PackageManager::discoverClients(const Map& map) {
   for(int i = 0; i < map.getRows(); i++) {
     for(int j = 0; j < map.getCols(); j++) {
@@ -21,9 +19,9 @@ void PackageManager::spawnPackage(int currentTick) {
   if(idCounter >= cfg->getTotalPackages()) return;
 
   /* Select random values for package attributes */
-  int targetIdx = rand() % clientLocations.size();
-  int reward = 200 + (rand() % 601); // 200-800
-  int deadline = 10 + (rand() % 11); // 10-20
+  int targetIdx = rng() % clientLocations.size();
+  int reward = 200 + (rng() % 601); // 200-800
+  int deadline = 10 + (rng() % 11); // 10-20
 
   allPackages.push_back(make_unique<Package>(
     idCounter++, 

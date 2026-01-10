@@ -67,6 +67,8 @@ private:
   }
 
 public:
+  const char* getName() const override { return "Charging"; }
+
   void execute(vector<unique_ptr<Agent>>& fleet, PackageManager& pkgManager, const Map& map) override {
     int hubX = map.getHubX();
     int hubY = map.getHubY();

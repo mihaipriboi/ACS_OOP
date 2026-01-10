@@ -134,8 +134,8 @@ void SimulationManager::renderUI() {
 
   /* Clear Screen */
   printf("\033[H\033[J");
-  
-  UIHelper::printHeader("HiveMind Live Simulation");
+
+  UIHelper::printHeader(strategy ? strategy->getName() : "No Strategy");
   printf(" Tick: %d / %d\n\n", currentTick, maxTicks);
 
   for(int i = 0; i < gameMap->getRows(); i++) {
@@ -261,7 +261,7 @@ void SimulationManager::renderUI() {
     }
 
     if(overdueCount < 5 || timeCol != RED) {
-      printf(" %02d  | (%2d, %2d)    | %4d   | %s%d ticks%s\n", 
+      printf(" %03d | (%2d, %2d)    | %4d   | %s%d ticks%s\n", 
              p->id, p->destX, p->destY, p->reward, 
              timeCol, remaining, RST);
     }

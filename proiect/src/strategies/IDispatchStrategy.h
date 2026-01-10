@@ -13,4 +13,6 @@ public:
   virtual ~IDispatchStrategy() {}
   
   virtual void execute(vector<unique_ptr<Agent>>& fleet, PackageManager& pkgManager, const Map& map) = 0;
+
+  virtual const char* getName() const { return "Unnamed Strategy"; }
 };
